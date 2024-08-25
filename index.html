@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Chart Website</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Financial Chart Website</h1>
+        <form method="POST">
+            <input type="text" name="ticker" placeholder="Enter Stock Ticker" required>
+            <button type="submit">Get Chart</button>
+        </form>
+
+        {% if chart_data %}
+            <h2>Stock Data for {{ ticker }}</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Open</th>
+                        <th>High</th>
+                        <th>Low</th>
+                        <th>Close</th>
+                        <th>Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in chart_data %}
+                    <tr>
+                        <td>{{ row['Date'] }}</td>
+                        <td>{{ row['Open'] }}</td>
+                        <td>{{ row['High'] }}</td>
+                        <td>{{ row['Low'] }}</td>
+                        <td>{{ row['Close'] }}</td>
+                        <td>{{ row['Volume'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h2>Pattern Recognition</h2>
+            <ul>
+                {% for pattern, result in patterns.items() %}
+                    <li>{{ pattern }}: {{ result }}</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Candlestick Chart</h2>
+            <div id="candlestick-chart"></div>
+            <script>
+                var candlestickData = {{ candlestick_chart | safe }};
+                Plotly.newPlot('candlestick-chart', candlestickData.data, candlestickData.layout);
+            </script>
+        {% endif %}
+    </div>
+</body>
+</html>
