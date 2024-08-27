@@ -20,8 +20,7 @@ def recognize_patterns(data):
     patterns = {
         'Hammer': ta.cdl_pattern(open_price, high_price, low_price, close_price, name="hammer"),
         'Shooting Star': ta.cdl_pattern(open_price, high_price, low_price, close_price, name="shootingstar"),
-        'Engulfing': ta.cdl_pattern(open_price, high_price, low_price, close_price, name="engulfing")
-    }
+        'Engulfing': ta.cdl_pattern(open_price, high_price, low_price, close_price, name="engulfing") }
 
     pattern_results = {}
     for name, pattern in patterns.items():
@@ -29,7 +28,6 @@ def recognize_patterns(data):
             pattern_results[name] = pattern.iloc[-1]
         else:
             pattern_results[name] = "Pattern not detected"
-
     return pattern_results
 # uses Plotly to graph the stocks candlestick chart
 def create_candlestick_chart(data):
@@ -38,11 +36,8 @@ def create_candlestick_chart(data):
         open=data['Open'],
         high=data['High'],
         low=data['Low'],
-        close=data['Close'],
-    )])
-
+        close=data['Close'],)])
     fig.update_layout(title='Candlestick chart', xaxis_title='Date', yaxis_title='Price')
-    
     graph_json = pio.to_json(fig)
     return graph_json
     
@@ -53,7 +48,6 @@ def index():
     patterns = None
     ticker = None
     candlestick_chart = None
-
     if request.method == "POST":
         ticker = request.form.get("ticker")
         if ticker:
@@ -61,7 +55,6 @@ def index():
             chart_data = data.to_dict(orient="records")
             patterns = recognize_patterns(data)
             candlestick_chart = create_candlestick_chart(data)
-
     return render_template("index.html", chart_data=chart_data, patterns=patterns, ticker=ticker, candlestick_chart=candlestick_chart)
 
 if __name__ == "__main__":
