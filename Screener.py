@@ -5,18 +5,18 @@ import plotly.graph_objs as go
 import plotly.io as pio
 
 app = Flask(__name__)
-
+# Function t get a ticker symbols stock data
 def get_stock_data(ticker):
     stock = yf.Ticker(ticker)
     hist = stock.history(period="1y")
     return hist
-
+# Uses pandas-ta to detect patterns
 def recognize_patterns(data):
     open_price = data['Open']
     high_price = data['High']
     low_price = data['Low']
     close_price = data['Close']
-
+#only looking for 3 patterns for now
     patterns = {
         'Hammer': ta.cdl_pattern(open_price, high_price, low_price, close_price, name="hammer"),
         'Shooting Star': ta.cdl_pattern(open_price, high_price, low_price, close_price, name="shootingstar"),
@@ -31,7 +31,7 @@ def recognize_patterns(data):
             pattern_results[name] = "Pattern not detected"
 
     return pattern_results
-
+# uses Plotly to graph the stocks candlestick chart
 def create_candlestick_chart(data):
     fig = go.Figure(data=[go.Candlestick(
         x=data.index,
@@ -43,10 +43,10 @@ def create_candlestick_chart(data):
 
     fig.update_layout(title='Candlestick chart', xaxis_title='Date', yaxis_title='Price')
     
-    # Convert the figure to JSON to pass to the template
     graph_json = pio.to_json(fig)
     return graph_json
-
+    
+#configure flask
 @app.route("/", methods=["GET", "POST"])
 def index():
     chart_data = None
